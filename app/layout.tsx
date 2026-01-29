@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
+import Navbar from "@/components/navbar";
+import Footer from "@/components/footer"; // We will create this below
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -9,8 +11,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: "Shop!ManeF/x - Authentic Kirkland Minoxidil Ghana",
+  description: "Original beard growth solutions with local support in Accra, Kumasi, and Takoradi.",
 };
 
 const geistSans = Geist({
@@ -29,11 +31,17 @@ export default function RootLayout({
       <body className={`${geistSans.className} antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light" // Set to light to match "White, Blue, Gold" theme
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <div className="flex flex-col min-h-screen">
+            <Navbar />
+            <main className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </div>
         </ThemeProvider>
       </body>
     </html>
