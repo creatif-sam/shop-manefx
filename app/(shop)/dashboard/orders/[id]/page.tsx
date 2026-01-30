@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckCircle, Truck, Package, MapPin, Clock } from "lucide-react";
+import { cn } from "@/lib/utils"; // Add this line at the top with other imports
 
 export default function OrderDetails({ params }: { params: { id: string } }) {
   // Logic to fetch specific order by ID would go here

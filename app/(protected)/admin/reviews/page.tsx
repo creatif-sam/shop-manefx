@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Star, CheckCircle2, XCircle, Trash2, Loader2 } from "lucide-react";
-import { toast } from "sonner"; // Assuming you use sonner for notifications
+import { toast } from "sonner"; // 
 
 export default function AdminReviewsPage() {
   const [reviews, setReviews] = useState<any[]>([]);
