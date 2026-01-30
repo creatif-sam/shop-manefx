@@ -1,17 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useSearchParams, useRouter } from "next/navigation"; // Added for toast listener
-import { toast } from "sonner"; // Ensure sonner is installed
+import { useSearchParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Package, Truck, CheckCircle, Clock, Sparkles } from "lucide-react";
+import { BeardLoader } from "@/components/ui/beard-loader";
 
-export default function ClientDashboard() {
+// 1. We move the dashboard logic into a sub-component
+function DashboardContent() {
   const [profile, setProfile] = useState<any>(null);
   const [recentOrder, setRecentOrder] = useState<any>(null);
   const supabase = createClient();
   
-  // Hooks for toast listener
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -24,14 +25,14 @@ export default function ClientDashboard() {
         duration: 5000,
       });
 
-      // Cleanup: Remove 'error' from URL without reloading the page
+      // Cleanup: Remove 'error' from URL
       const params = new URLSearchParams(searchParams.toString());
       params.delete("error");
       const newRelativePathQuery = window.location.pathname + (params.toString() ? `?${params.toString()}` : "");
       router.replace(newRelativePathQuery);
     }
 
-    // 2. Original Dashboard Data Fetching
+    // 2. Dashboard Data Fetching
     async function getDashboardData() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -110,5 +111,14 @@ export default function ClientDashboard() {
         </div>
       </div>
     </div>
+  );
+}
+
+// 2. The default export is now wrapped in Suspense to fix the Vercel build error
+export default function ClientDashboard() {
+  return (
+    <Suspense fallback={<BeardLoader />}>
+      <DashboardContent />
+    </Suspense>
   );
 }
