@@ -48,8 +48,9 @@ export default async function Index() {
         </section>
       </main>
 
-      {/* Floating WhatsApp Button [cite: 54, 83] */}
-      <WhatsappButton phoneNumber="+233535023614" />
+    
+      {/* Floating WhatsApp Button */}
+<WhatsappButton />
 
       <Newsletter />
     </div>
