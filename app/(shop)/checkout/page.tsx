@@ -147,7 +147,13 @@ export default function CheckoutPage() {
               {cart.map((item) => (
                 <div key={item.id} className="flex items-center gap-4">
                   <div className="relative w-16 h-16 rounded-xl bg-white/10 overflow-hidden border border-white/10">
-                    <Image src={item.image_url} alt={item.name} fill className="object-cover" />
+                    <Image 
+  // If item.image_url is empty, null, or undefined, use a placeholder
+  src={item.image_url || "/placeholder.jpg"} 
+  alt={item.name} 
+  fill 
+  className="object-cover" 
+/>
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-bold leading-tight">{item.name}</p>

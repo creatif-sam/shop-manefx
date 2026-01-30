@@ -34,14 +34,36 @@ export function LoginForm({
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      // 1. Authenticate the User
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      if (error) throw error;
-      
-      // Redirect to admin dashboard
-      router.push("/admin");
+
+      if (authError) throw authError;
+
+      if (authData?.user) {
+        // 2. Check the Profile for Admin status
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles")
+          .select("is_admin")
+          .eq("id", authData.user.id)
+          .single();
+
+        if (profileError) {
+          // If no profile exists yet, default to the client dashboard
+          console.error("Profile fetch error:", profileError);
+          router.push("/dashboard");
+          return;
+        }
+
+        // 3. Conditional Redirect based on is_admin boolean
+        if (profile?.is_admin) {
+          router.push("/admin");
+        } else {
+          router.push("/dashboard");
+        }
+      }
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "Invalid login credentials");
     } finally {
@@ -54,7 +76,7 @@ export function LoginForm({
       <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-2xl shadow-blue-100/50 border border-gray-100 relative overflow-hidden">
         
         {/* Subtle Brand Accent */}
-        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 via-blue-400 to-gold-500" />
+        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 via-blue-400 to-amber-500" />
 
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-2 text-center">
@@ -155,10 +177,6 @@ export function LoginForm({
             </p>
           </div>
         </div>
-      </div>
-
-      {/* Trust Badge */}
-      <div className="mt-8 flex justify-center items-center gap-4 opacity-40 grayscale">
       </div>
     </div>
   );
