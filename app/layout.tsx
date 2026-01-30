@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
+import { LoadingProvider } from "@/components/providers/loading-provider";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -37,7 +38,9 @@ export default function RootLayout({
               This allows the Admin to have its own layout 
               without the shop's navigation appearing.
           */}
+          <LoadingProvider>
           {children}
+          </LoadingProvider>
         </ThemeProvider>
       </body>
     </html>
