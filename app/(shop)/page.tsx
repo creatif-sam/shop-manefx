@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-
 import HeroSlider from "@/components/home/Hero-slider";
 import ProductCard from "@/components/ui/product-card";
 import { WhatsappButton } from "@/components/ui/whatsapp-button";

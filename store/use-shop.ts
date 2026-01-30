@@ -7,12 +7,12 @@ interface CartItem {
   name: string;
   price: number;
   image_url: string | null;
-  product_image_url?: string | null; // Support for admin schema
+  product_image_url?: string | null;
   quantity: number;
 }
 
 interface ShopState {
-  wishlist: any[]; // Changed from wishlistIds: string[]
+  wishlist: any[]; 
   cart: CartItem[];
   toggleWishlist: (product: any) => void;
   addToCart: (product: any) => void;
@@ -47,18 +47,22 @@ export const useShopStore = create<ShopState>()(
       addToCart: (product) =>
         set((state) => {
           const existingItem = state.cart.find((item) => item.id === product.id);
+          // Use the quantity passed from the component, or default to 1
+          const addedQty = product.quantity || 1;
+          
           toast.success(`${product.name} added to bag`);
           
           if (existingItem) {
             return {
               cart: state.cart.map((item) =>
                 item.id === product.id
-                  ? { ...item, quantity: item.quantity + 1 }
+                  ? { ...item, quantity: item.quantity + addedQty }
                   : item
               ),
             };
           }
-          return { cart: [...state.cart, { ...product, quantity: 1 }] };
+          // Ensure we spread the product and set the initial quantity correctly
+          return { cart: [...state.cart, { ...product, quantity: addedQty }] };
         }),
 
       updateQuantity: (id, delta) =>
@@ -82,7 +86,7 @@ export const useShopStore = create<ShopState>()(
     }),
     { 
       name: 'shop-storage',
-      // Ensure we only persist client-side
+      // skipHydration: false ensures the client picks up the persisted state correctly
       skipHydration: false 
     }
   )
