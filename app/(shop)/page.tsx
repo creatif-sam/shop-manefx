@@ -6,6 +6,7 @@ import FeaturedProducts from "@/components/featured-products/Featured-products";
 import Newsletter from "@/components/newsletter";
 import PromotionsSection from "@/components/promotions/promotion-section";
 import RecentProducts from "@/components/recent-products/recent-products";
+import AuthenticitySection from "@/components/shop/AuthenticitySection";
 
 export default async function Index() {
   const supabase = await createClient();
@@ -37,15 +38,7 @@ export default async function Index() {
         </section>
 
         {/* Trust Section: Why Shop With Us? */}
-        <section className="bg-blue-50 p-8 rounded-2xl border border-gold-200">
-          <div className="text-center max-w-2xl mx-auto">
-            <h3 className="text-2xl font-bold text-blue-900 mb-4">Guaranteed Authenticity</h3>
-            <p className="text-gray-700">
-              We understand the struggle of finding genuine products in Ghana. 
-              Every bottle of Kirkland Signature Minoxidil we sell is 100% original.
-            </p>
-          </div>
-        </section>
+       <AuthenticitySection />
       </main>
 
     

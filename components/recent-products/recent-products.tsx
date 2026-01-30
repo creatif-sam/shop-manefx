@@ -63,7 +63,6 @@ export default function RecentProducts() {
         {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
           {products.map((product, index) => {
-            // STOCK LOGIC
             const isLowStock = product.stock_quantity > 0 && product.stock_quantity <= 5;
             const isOutOfStock = product.stock_quantity === 0;
 
@@ -76,9 +75,9 @@ export default function RecentProducts() {
                 transition={{ duration: 0.6, delay: index * 0.15 }}
                 className="relative"
               >
-                {/* DYNAMIC STOCK BADGE */}
+                {/* DYNAMIC STOCK BADGE - Pushed down to top-14 */}
                 {(isLowStock || isOutOfStock) && (
-                  <div className={`absolute top-4 left-4 z-30 px-3 py-1.5 rounded-xl border backdrop-blur-md flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest shadow-lg ${
+                  <div className={`absolute top-14 left-4 z-30 px-3 py-1.5 rounded-xl border backdrop-blur-md flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest shadow-lg ${
                     isOutOfStock 
                     ? "bg-red-500/90 text-white border-red-400" 
                     : "bg-amber-400/90 text-blue-950 border-amber-300"

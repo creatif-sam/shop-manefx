@@ -5,22 +5,40 @@ import { usePathname } from "next/navigation";
 import { ShoppingCart, Heart, User, Sparkles, Home, Search, HelpCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useShopStore } from "@/store/use-shop";
+import { createClient } from "@/lib/supabase/client"; // Ensure this path is correct
 import CartDrawer from "./cart-drawer";
-import { motion } from "framer-motion"; 
+import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function Navbar() {
-  // Pull full wishlist array from store
   const cart = useShopStore((state) => state.cart);
-  const wishlist = useShopStore((state) => state.wishlist) || []; 
+  const wishlist = useShopStore((state) => state.wishlist) || [];
   const [mounted, setMounted] = useState(false);
+  const [userProfile, setUserProfile] = useState<{ full_name: string; avatar_url?: string } | null>(null);
   const pathname = usePathname();
+  const supabase = createClient();
 
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
   const wishlistCount = wishlist.length;
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+
+    async function getUserData() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("full_name, avatar_url")
+          .eq("id", user.id)
+          .single();
+        setUserProfile(profile);
+      }
+    }
+    getUserData();
+  }, [supabase]);
+
+  const firstName = userProfile?.full_name?.split(" ")[0] || "Profile";
 
   const navLinks = [
     { label: "Home", href: "/" },
@@ -30,17 +48,19 @@ export default function Navbar() {
     { label: "FAQ/AI Shop Assistant", href: "/faq", isSpecial: true },
   ];
 
+  // Logic for Profile Link
+  const profileLink = userProfile ? "/dashboard" : "/auth/login";
+
   const mobileBottomLinks = [
     { label: "Home", href: "/", icon: Home },
     { label: "Explore", href: "/shop", icon: Search },
     { label: "Wishlist", href: "/wishlist", icon: Heart },
     { label: "Help/AI", href: "/faq", icon: HelpCircle },
-    { label: "Profile", href: "/auth/login", icon: User },
+    { label: firstName, href: profileLink, icon: User, isProfile: true },
   ];
 
   return (
     <>
-      {/* --- TOP NAVBAR --- */}
       <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16 sticky top-0 bg-white/80 backdrop-blur-md z-50">
         <div className="w-full max-w-7xl flex justify-between items-center p-3 px-5 text-sm relative">
           
@@ -73,41 +93,65 @@ export default function Navbar() {
             </CartDrawer>
             
             <div className="hidden lg:flex items-center gap-2">
-               {/* DESKTOP WISHLIST ICON WITH COUNT */}
                <Link href="/wishlist" className="relative p-2 text-gray-700 hover:text-red-500 transition-all hover:scale-110 group">
                   <Heart className={`w-5 h-5 ${mounted && wishlistCount > 0 ? 'fill-red-500 text-red-500' : ''}`} />
                   {mounted && wishlistCount > 0 && (
-                    <span className="absolute top-0 right-0 bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full flex items-center justify-center min-w-[16px] animate-in zoom-in">
+                    <span className="absolute top-0 right-0 bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full flex items-center justify-center min-w-[16px]">
                       {wishlistCount}
                     </span>
                   )}
                </Link>
-               <Link href="/auth/login" className="p-2 text-gray-700 hover:text-blue-900 transition-all">
-                  <User className="w-5 h-5" />
+
+               {/* DESKTOP DYNAMIC PROFILE */}
+               <Link href={profileLink} className="p-1 ml-2 flex items-center gap-2 group">
+                  {userProfile?.avatar_url ? (
+                    <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-transparent group-hover:border-blue-600 transition-all">
+                      <Image 
+                        src={userProfile.avatar_url} 
+                        alt="Profile" 
+                        fill 
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="p-1.5 bg-gray-50 rounded-full text-gray-700 group-hover:text-blue-900 transition-all">
+                      <User className="w-5 h-5" />
+                    </div>
+                  )}
+                  {userProfile && (
+                    <span className="text-[11px] font-black text-blue-900 uppercase tracking-tight hidden xl:block">
+                      {firstName}
+                    </span>
+                  )}
                </Link>
             </div>
           </div>
         </div>
       </nav>
 
-      {/* --- MOBILE BOTTOM TAB BAR --- */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-3 flex justify-between items-center z-[100] shadow-[0_-5px_20px_rgba(0,0,0,0.05)] pb-safe">
         {mobileBottomLinks.map((link) => {
           const Icon = link.icon;
           const isActive = pathname === link.href;
           
           return (
-            <Link key={link.label} href={link.href} className="flex flex-col items-center gap-1 relative group">
+            <Link key={link.label} href={link.href} className="flex flex-col items-center gap-1 relative group min-w-[60px]">
               <div className={`p-1 transition-all ${isActive ? 'text-blue-900 scale-110' : 'text-gray-400'}`}>
-                <Icon className={`w-6 h-6 ${isActive && link.label === 'Wishlist' ? 'fill-red-500 text-red-500' : ''}`} />
+                {/* MOBILE DYNAMIC PROFILE ICON */}
+                {link.isProfile && userProfile?.avatar_url ? (
+                  <div className={`relative w-6 h-6 rounded-full overflow-hidden border ${isActive ? 'border-blue-900' : 'border-transparent'}`}>
+                    <Image src={userProfile.avatar_url} alt="Profile" fill className="object-cover" />
+                  </div>
+                ) : (
+                  <Icon className={`w-6 h-6 ${isActive && link.label === 'Wishlist' ? 'fill-red-500 text-red-500' : ''}`} />
+                )}
               </div>
-              <span className={`text-[10px] font-bold uppercase tracking-tighter ${isActive ? 'text-blue-900' : 'text-gray-400'}`}>
+              <span className={`text-[9px] font-black uppercase tracking-tighter ${isActive ? 'text-blue-900' : 'text-gray-400'}`}>
                 {link.label}
               </span>
               
-              {/* MOBILE COUNT BADGE */}
               {link.label === 'Wishlist' && mounted && wishlistCount > 0 && (
-                <span className="absolute -top-1 right-0 bg-red-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full min-w-[14px] flex items-center justify-center border-2 border-white">
+                <span className="absolute -top-1 right-2 bg-red-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full min-w-[14px] flex items-center justify-center border-2 border-white">
                   {wishlistCount}
                 </span>
               )}
