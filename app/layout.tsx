@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer"; // We will create this below
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -12,7 +10,7 @@ const defaultUrl = process.env.VERCEL_URL
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
   title: "Shop!ManeF/x - Authentic Kirkland Minoxidil Ghana",
-  description: "Original beard growth solutions with local support in Accra, Kumasi, and Takoradi.",
+  description: "Original beard growth solutions with local support in Accra.",
 };
 
 const geistSans = Geist({
@@ -31,17 +29,15 @@ export default function RootLayout({
       <body className={`${geistSans.className} antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="light" // Set to light to match "White, Blue, Gold" theme
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex flex-col min-h-screen">
-            <Navbar />
-            <main className="flex-grow">
-              {children}
-            </main>
-            <Footer />
-          </div>
+          {/* NO NAVBAR OR FOOTER HERE. 
+              This allows the Admin to have its own layout 
+              without the shop's navigation appearing.
+          */}
+          {children}
         </ThemeProvider>
       </body>
     </html>

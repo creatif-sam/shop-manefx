@@ -1,20 +1,20 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { 
+  Eye, 
+  EyeOff, 
+  Loader2, 
+  ShieldCheck, 
+  ArrowRight 
+} from "lucide-react";
 
 export function LoginForm({
   className,
@@ -22,6 +22,7 @@ export function LoginForm({
 }: React.ComponentPropsWithoutRef<"div">) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -38,73 +39,127 @@ export function LoginForm({
         password,
       });
       if (error) throw error;
-      // Update this route to redirect to an authenticated route. The user already has an active session.
-      router.push("/protected");
+      
+      // Redirect to admin dashboard
+      router.push("/admin");
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+      setError(error instanceof Error ? error.message : "Invalid login credentials");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin}>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
+    <div className={cn("w-full max-w-[400px] mx-auto", className)} {...props}>
+      <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-2xl shadow-blue-100/50 border border-gray-100 relative overflow-hidden">
+        
+        {/* Subtle Brand Accent */}
+        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 via-blue-400 to-gold-500" />
+
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2 text-center">
+            <div className="flex justify-center mb-2">
+              <div className="bg-blue-50 p-3 rounded-2xl text-blue-600">
+                <ShieldCheck size={28} />
               </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <Link
-                    href="/auth/forgot-password"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
+            </div>
+            <h1 className="text-3xl font-black text-blue-950 uppercase tracking-tighter">
+              Welcome <span className="text-blue-600">Back</span>
+            </h1>
+            <p className="text-balance text-sm font-medium text-gray-400">
+              Access your ManeF/x account to manage your growth kit.
+            </p>
+          </div>
+
+          <form onSubmit={handleLogin} className="flex flex-col gap-5">
+            {/* Email Field */}
+            <div className="grid gap-2">
+              <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">
+                Email Address
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="name@example.com"
+                required
+                className="h-12 rounded-xl bg-gray-50 border-none font-bold text-sm focus-visible:ring-2 focus-visible:ring-blue-100 transition-all"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            {/* Password Field */}
+            <div className="grid gap-2">
+              <div className="flex items-center justify-between ml-1">
+                <Label htmlFor="password" className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                  Password
+                </Label>
+                <Link
+                  href="/auth/forgot-password"
+                  className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:text-blue-800 transition-colors"
+                >
+                  Forgot?
+                </Link>
+              </div>
+              <div className="relative">
                 <Input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
+                  className="h-12 rounded-xl bg-gray-50 border-none font-bold text-sm focus-visible:ring-2 focus-visible:ring-blue-100 transition-all pr-12"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Login"}
-              </Button>
             </div>
-            <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
+
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 text-red-600 p-3 rounded-xl text-xs font-bold border border-red-100 animate-in fade-in zoom-in-95">
+                {error}
+              </div>
+            )}
+
+            {/* Submit Button */}
+            <Button 
+              type="submit" 
+              disabled={isLoading}
+              className="w-full h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest text-xs shadow-lg shadow-blue-200 transition-all active:scale-[0.98]"
+            >
+              {isLoading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <span className="flex items-center gap-2">
+                  Sign In <ArrowRight size={16} />
+                </span>
+              )}
+            </Button>
+          </form>
+
+          <div className="text-center">
+            <p className="text-sm font-medium text-gray-400">
+              New to ManeF/x?{" "}
               <Link
                 href="/auth/sign-up"
-                className="underline underline-offset-4"
+                className="text-blue-600 font-black hover:underline underline-offset-4"
               >
-                Sign up
+                Create Account
               </Link>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Trust Badge */}
+      <div className="mt-8 flex justify-center items-center gap-4 opacity-40 grayscale">
+      </div>
     </div>
   );
 }

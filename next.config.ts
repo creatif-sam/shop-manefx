@@ -16,6 +16,17 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+      protocol: 'https',
+        hostname: 'pxzjrqqcpvpyqtjgekak.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
+  },
+   {
+        protocol: 'https',
+        hostname: 'placehold.co',
+      },
+
     ],
   },
   // Ensure Turbopack or Webpack handles video files if you import them locally

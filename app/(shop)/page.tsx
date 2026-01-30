@@ -5,6 +5,8 @@ import ProductCard from "@/components/ui/product-card";
 import { WhatsappButton } from "@/components/ui/whatsapp-button";
 import FeaturedProducts from "@/components/featured-products/Featured-products";
 import Newsletter from "@/components/newsletter";
+import PromotionsSection from "@/components/promotions/promotion-section";
+import RecentProducts from "@/components/recent-products/recent-products";
 
 export default async function Index() {
   const supabase = await createClient();
@@ -19,10 +21,9 @@ export default async function Index() {
     <div className="flex-1 w-full flex flex-col gap-20 items-center">
       {/* Hero Section: Focused on the core problem (Beard Growth) */}
       <HeroSlider />
+      <RecentProducts/>
       <FeaturedProducts/>
-
-      {/* Shop Section: Authentic Kirkland Minoxidil & Kits */}
-   
+      <PromotionsSection/>
 
       <main className="flex-1 flex flex-col gap-12 max-w-7xl px-4 w-full">
         <section id="shop">

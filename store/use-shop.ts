@@ -1,18 +1,20 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { toast } from 'sonner';
 
 interface CartItem {
   id: string;
   name: string;
   price: number;
   image_url: string | null;
+  product_image_url?: string | null; // Support for admin schema
   quantity: number;
 }
 
 interface ShopState {
-  wishlistIds: string[];
+  wishlist: any[]; // Changed from wishlistIds: string[]
   cart: CartItem[];
-  toggleWishlist: (id: string) => void;
+  toggleWishlist: (product: any) => void;
   addToCart: (product: any) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, delta: number) => void;
@@ -22,17 +24,31 @@ interface ShopState {
 export const useShopStore = create<ShopState>()(
   persist(
     (set) => ({
-      wishlistIds: [],
+      wishlist: [],
       cart: [],
-      toggleWishlist: (id) =>
-        set((state) => ({
-          wishlistIds: state.wishlistIds.includes(id)
-            ? state.wishlistIds.filter((itemId) => itemId !== id)
-            : [...state.wishlistIds, id],
-        })),
+
+      toggleWishlist: (product) =>
+        set((state) => {
+          const isExist = state.wishlist.find((item) => item.id === product.id);
+          
+          if (isExist) {
+            toast.info("Removed from wishlist");
+            return {
+              wishlist: state.wishlist.filter((item) => item.id !== product.id),
+            };
+          } else {
+            toast.success("Added to wishlist");
+            return {
+              wishlist: [...state.wishlist, product],
+            };
+          }
+        }),
+
       addToCart: (product) =>
         set((state) => {
           const existingItem = state.cart.find((item) => item.id === product.id);
+          toast.success(`${product.name} added to bag`);
+          
           if (existingItem) {
             return {
               cart: state.cart.map((item) =>
@@ -44,6 +60,7 @@ export const useShopStore = create<ShopState>()(
           }
           return { cart: [...state.cart, { ...product, quantity: 1 }] };
         }),
+
       updateQuantity: (id, delta) =>
         set((state) => ({
           cart: state.cart.map((item) =>
@@ -52,12 +69,21 @@ export const useShopStore = create<ShopState>()(
               : item
           ),
         })),
+
       removeFromCart: (id) =>
-        set((state) => ({
-          cart: state.cart.filter((item) => item.id !== id),
-        })),
+        set((state) => {
+          toast.error("Item removed from bag");
+          return {
+            cart: state.cart.filter((item) => item.id !== id),
+          };
+        }),
+
       clearCart: () => set({ cart: [] }),
     }),
-    { name: 'shop-storage' }
+    { 
+      name: 'shop-storage',
+      // Ensure we only persist client-side
+      skipHydration: false 
+    }
   )
 );
