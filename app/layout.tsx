@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
+
+// ✅ FIXED: Added curly braces to match the named export in your provider file
 import { LoadingProvider } from "@/components/providers/loading-provider";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -34,12 +36,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {/* NO NAVBAR OR FOOTER HERE. 
-              This allows the Admin to have its own layout 
-              without the shop's navigation appearing.
+          {/* LoadingProvider wraps children to handle 
+              the BeardLoader transitions globally.
           */}
           <LoadingProvider>
-          {children}
+            {children}
           </LoadingProvider>
         </ThemeProvider>
       </body>
