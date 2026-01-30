@@ -15,6 +15,7 @@ import {
   Search,
   User as UserIcon,
   Menu,
+  Inbox,
   X,
   Mail // Added Mail Icon
 } from "lucide-react";
@@ -25,7 +26,8 @@ const menuItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Products", href: "/admin/products", icon: ShoppingBag },
   { label: "Customers", href: "/admin/customers", icon: Users },
-  { label: "Mail System", href: "/admin/mail", icon: Mail }, // New Mail Tab
+  { label: "Mail System", href: "/admin/mail", icon: Mail }, 
+  { label: "Messages", href: "/admin/messages", icon: Inbox }, 
   { label: "Reviews", href: "/admin/reviews", icon: Star },
   { label: "Promotions", href: "/admin/promotions", icon: Tag },
   { label: "Settings", href: "/admin/settings", icon: Settings },

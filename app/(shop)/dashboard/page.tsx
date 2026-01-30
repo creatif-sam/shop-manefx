@@ -2,14 +2,36 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useSearchParams, useRouter } from "next/navigation"; // Added for toast listener
+import { toast } from "sonner"; // Ensure sonner is installed
 import { Package, Truck, CheckCircle, Clock, Sparkles } from "lucide-react";
 
 export default function ClientDashboard() {
   const [profile, setProfile] = useState<any>(null);
   const [recentOrder, setRecentOrder] = useState<any>(null);
   const supabase = createClient();
+  
+  // Hooks for toast listener
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   useEffect(() => {
+    // 1. Toast Listener for Unauthorized Access
+    const error = searchParams.get("error");
+    if (error === "unauthorized") {
+      toast.error("Access Denied", {
+        description: "You do not have administrative permissions.",
+        duration: 5000,
+      });
+
+      // Cleanup: Remove 'error' from URL without reloading the page
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("error");
+      const newRelativePathQuery = window.location.pathname + (params.toString() ? `?${params.toString()}` : "");
+      router.replace(newRelativePathQuery);
+    }
+
+    // 2. Original Dashboard Data Fetching
     async function getDashboardData() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -22,8 +44,9 @@ export default function ClientDashboard() {
       setProfile(profileRes.data);
       if (orderRes.data?.[0]) setRecentOrder(orderRes.data[0]);
     }
+
     getDashboardData();
-  }, []);
+  }, [searchParams, router, supabase]);
 
   return (
     <div className="space-y-10">

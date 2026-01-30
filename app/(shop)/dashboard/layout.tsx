@@ -10,6 +10,8 @@ const sidebarLinks = [
   { label: "My Orders", href: "/dashboard/orders", icon: Package },
   { label: "Wishlist", href: "/dashboard/wishlist", icon: Heart },
   { label: "Account Settings", href: "/dashboard/settings", icon: Settings },
+   { label: "Sign Out", href: "/shop/", icon: LogOut },
+
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -46,10 +48,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           })}
         </nav>
 
-        <button className="flex items-center gap-3 px-6 py-4 w-full text-red-400 font-black text-[11px] uppercase tracking-widest hover:bg-red-50 rounded-2xl transition-all mt-4">
-          <LogOut size={18} />
-          Sign Out
-        </button>
+       
       </aside>
 
       {/* MAIN CONTENT */}
