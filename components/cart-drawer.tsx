@@ -4,6 +4,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { X, ShoppingBag, Trash2, Plus, Minus } from "lucide-react";
 import { useShopStore } from "@/store/use-shop";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function CartDrawer({ children }: { children: React.ReactNode }) {
   const { cart, removeFromCart, updateQuantity } = useShopStore();
@@ -105,9 +106,15 @@ export default function CartDrawer({ children }: { children: React.ReactNode }) 
                 </span>
               </div>
               
-              <button className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-100 hover:bg-blue-700 transition-all active:scale-[0.98]">
-                Secure Checkout
-              </button>
+          
+
+
+
+<Link href="/checkout" className="block w-full">
+  <button className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-100 hover:bg-blue-700 transition-all active:scale-[0.98]">
+    Secure Checkout
+  </button>
+</Link>
 
               <div className="flex items-center justify-center gap-2 py-2">
                 <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />

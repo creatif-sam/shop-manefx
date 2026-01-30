@@ -23,7 +23,7 @@ export function WhatsappButton({
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-[100] flex items-center gap-3 group">
+    <div className="fixed bottom-20 right-4 z-[100] flex items-center gap-3 group">
       {/* Label - Desktop only hover state */}
       <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-gray-100 shadow-xl opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 pointer-events-none hidden md:block">
         <p className="text-[9px] font-black text-blue-950 uppercase tracking-widest whitespace-nowrap">Chat with us</p>
