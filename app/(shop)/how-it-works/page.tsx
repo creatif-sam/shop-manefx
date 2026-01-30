@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion"; // Added Variants type
 import { 
   ShoppingBag, 
   Truck, 
@@ -22,7 +22,7 @@ const steps = [
     title: "Fast Local Delivery",
     description: "We dispatch from Accra. Get your kit delivered to your doorstep within 24-48 hours across major cities in Ghana.",
     icon: Truck,
-    color: "bg-gold-100 text-gold-700",
+    color: "bg-amber-100 text-amber-700",
   },
   {
     title: "Verification Proof",
@@ -50,7 +50,8 @@ const steps = [
   },
 ];
 
-const containerVariants = {
+// Explicitly typing as Variants fixes the Vercel build error
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -58,9 +59,16 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { 
+      duration: 0.5, 
+      ease: "easeOut" 
+    } 
+  },
 };
 
 export default function HowItWorks() {
@@ -73,7 +81,7 @@ export default function HowItWorks() {
           animate={{ opacity: 1, scale: 1 }}
           className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-6"
         >
-          Your Journey to a <span className="text-gold-500">Full Beard</span>
+          Your Journey to a <span className="text-amber-500">Full Beard</span>
         </motion.h1>
         <p className="max-w-2xl mx-auto text-blue-100 text-lg md:text-xl font-medium">
           We don't just sell products; we provide a proven system for beard growth 
@@ -116,7 +124,7 @@ export default function HowItWorks() {
           <h2 className="text-3xl font-black text-blue-900 mb-6 uppercase">Ready to start?</h2>
           <p className="text-gray-600 mb-10 text-lg">
             Join thousands of men in Accra, Kumasi, and Takoradi who have transformed 
-            their confidence with shop!ManeF/x.
+            their confidence with ManeF/x.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
