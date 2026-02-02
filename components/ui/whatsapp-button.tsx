@@ -11,7 +11,7 @@ export function WhatsappButton({
 }: WhatsappButtonProps) {
   
   // Your specific WhatsApp number
-  const phoneNumber = "+233535023614";
+  const phoneNumber = "+233595971997";
 
   const handleChat = () => {
     // Strips any non-numerical characters to ensure it works globally

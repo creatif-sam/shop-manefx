@@ -35,7 +35,7 @@ export default function ProductCard({ product }: { product: any }) {
         <button 
           onClick={(e) => {
             e.preventDefault(); 
-            toggleWishlist(product); // Pass the whole object!
+            toggleWishlist(product); 
           }}
           className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-white/90 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 shadow-sm"
         >
